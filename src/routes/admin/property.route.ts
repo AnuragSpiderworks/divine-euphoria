@@ -7,7 +7,7 @@ import {
   CreatePropertyDTO,
   Property,
   UpdatePropertyDTO,
-} from "../../types";
+} from "../types";
 import { isAdmin } from "../../middleware/isAdmin.middleware";
 
 const adminPropertyRouter = Router();

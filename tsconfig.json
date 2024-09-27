@@ -23,5 +23,5 @@
     "skipLibCheck": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["./src/**/*.ts", "src/config/passport.js"]
+  "include": ["./src/**/*.ts", "src/config/passport.js", "src/routes/types.ts"]
 }

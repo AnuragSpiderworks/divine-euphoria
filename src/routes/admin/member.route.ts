@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 import { Router } from "express";
 import { protectJWT } from "../../middleware/protectJWT.middleware";
-import { ARequest, MemberNoPassword, UpdateMemberDTO } from "../../types";
+import { ARequest, MemberNoPassword, UpdateMemberDTO } from "../types";
 import { isAdmin } from "../../middleware/isAdmin.middleware";
 import { prismaExclude } from "../../utils/prismaExclude";
 import bcrypt from "bcryptjs";

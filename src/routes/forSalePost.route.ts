@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { protectJWT } from "../middleware/protectJWT.middleware";
-import { ARequest } from "../types";
+import { ARequest } from "./types";
 
 const forSalePostRouter = Router();
 const prisma = new PrismaClient();

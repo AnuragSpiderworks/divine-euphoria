@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import { protectJWT } from "../../middleware/protectJWT.middleware";
 import { isAdmin } from "../../middleware/isAdmin.middleware";
-import { ARequest } from "../../types";
+import { ARequest } from "../types";
 
 const adminNotesRouter = Router();
 

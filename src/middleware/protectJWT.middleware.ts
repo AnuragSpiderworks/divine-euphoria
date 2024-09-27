@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { prismaExclude } from "../utils/prismaExclude";
-import { ARequest } from "../types";
+import { ARequest } from "../routes/types";
 
 const prisma = new PrismaClient();
 

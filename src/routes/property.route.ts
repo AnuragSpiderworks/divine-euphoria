@@ -1,7 +1,7 @@
 import { PrismaClient, Property } from "@prisma/client";
 import { Router } from "express";
 import { protectJWT } from "../middleware/protectJWT.middleware";
-import { ARequest } from "../types";
+import { ARequest } from "./types";
 
 const propertyRouter = Router();
 const prisma = new PrismaClient();

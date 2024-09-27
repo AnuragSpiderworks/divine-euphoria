@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 import { Router } from "express";
 import { protectJWT } from "../../middleware/protectJWT.middleware";
-import { ARequest } from "../../types";
+import { ARequest } from "../types";
 import { isAdmin } from "../../middleware/isAdmin.middleware";
 // import transporter from "../../config/mailer";
 

@@ -1,4 +1,4 @@
-import { ARequest } from "../types";
+import { ARequest } from "../routes/types";
 
 export const isAdmin = async (req: ARequest, res, next) => {
   if (req.user.role !== "ADMIN") {

@@ -7,7 +7,7 @@ import {
   ARequest,
   MemberNoPassword,
   UpdateMemberDTO,
-} from "../types";
+} from "./types";
 import { prismaExclude } from "../utils/prismaExclude";
 import { PrismaClient } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
