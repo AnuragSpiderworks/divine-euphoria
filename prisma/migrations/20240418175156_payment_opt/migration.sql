@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Payment" ALTER COLUMN "date" DROP NOT NULL,
+ALTER COLUMN "mode" DROP NOT NULL,
+ALTER COLUMN "is_auto_payment" DROP NOT NULL;

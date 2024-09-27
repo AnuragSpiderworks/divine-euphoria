@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Invoice" ALTER COLUMN "amount" DROP NOT NULL,
+ALTER COLUMN "rate" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "InvoiceGeneration" ALTER COLUMN "amount" DROP NOT NULL,
+ALTER COLUMN "rate" DROP NOT NULL;

@@ -1,0 +1,51 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "build": "dotenv -e .env.production npm i && tsc -p tsconfig.json",
+    "dev": "dotenv -e .env.development nodemon --exec ts-node src/index.ts",
+    "importDataServer": "dotenv -e .env.development nodemon src/scripts/importData.mjs",
+    "debug": "nodemon --exec \"node --inspect=0.0.0.0:9229 --require ts-node/register ./src/index.ts\"",
+    "vercel-build": "echo \"No need to run build\"",
+    "start": "dotenv -e .env.production node build/src/index.js",
+    "migrate:local": "dotenv -e .env.development npx prisma migrate dev",
+    "migrate:production": "dotenv -e .env.production npx prisma migrate deploy",
+    "studio:local": "dotenv -e .env.development npx prisma studio"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@api/instamojo": "file:.api/apis/instamojo",
+    "@prisma/client": "^5.16.1",
+    "axios": "^1.6.8",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "dotenv-cli": "^7.3.0",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "instamojo-nodejs": "^0.0.5",
+    "jsonic": "^1.0.1",
+    "jsonwebtoken": "^9.0.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.7",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "pm2": "^5.3.0",
+    "sha256": "^0.2.0",
+    "uniqid": "^5.4.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.8.3",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.2",
+    "prisma": "^5.16.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}

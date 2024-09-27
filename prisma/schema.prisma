@@ -1,0 +1,355 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model LoginHistory {
+  id               BigInt   @id @default(autoincrement())
+  member_id        BigInt?
+  login_date       DateTime
+  login_ip_address String
+  success_status   Boolean
+  Member           Member?  @relation(fields: [member_id], references: [id])
+}
+
+model Member {
+  id                  BigInt  @id @default(autoincrement())
+  name                String
+  email               String  @unique
+  password            String
+  role                Role    @default(NEW_REG)
+  phone               String?
+  facebook            String?
+  linkedin            String?
+  address             String?
+  membership_number   BigInt?
+  profile_picture_url String?
+
+  LoginHistory               LoginHistory[]
+  OwnedProperties            OwnedProperty[]
+  Invoices                   Invoice[]
+  InvoiceGenerations         InvoiceGeneration[]
+  Payments                   Payment[]
+  PaymentsVerified           Payment[]             @relation("Verifier")
+  Documents                  Document[]
+  Contacts                   Contact[]
+  WorkReports                WorkReport[]
+  AuditLogsPerformed         AuditLog[]            @relation("Performer")
+  AuditLogsTargeted          AuditLog[]            @relation("Target")
+  Notes                      Note[]                @relation("NoteTargetMember")
+  NotesPosted                Note[]                @relation("NotePostedMember")
+  GalleryPhotos              GalleryPhoto[]
+  ForSalePosts               ForSalePost[]
+  PostedTags                 Tag[]
+  PaymentNotifications       PaymentNotification[] @relation("PaymentNotificationTargetMember")
+  PaymentNotificationsPosted PaymentNotification[] @relation("PaymentNotificationPostedMember")
+}
+
+model Property {
+  id                         BigInt          @id @default(autoincrement())
+  survey                     String
+  plot_number                String
+  old_plot_number            String?
+  area                       Float
+  is_fenced                  Boolean
+  has_cottage                Boolean
+  has_electricity_connection Boolean
+  has_water_connection       Boolean
+  GalleryPhotos              GalleryPhoto[]
+  OwnedProperties            OwnedProperty[]
+  Invoices                   Invoice[]
+  WorkReports                WorkReport[]
+  AuditLogs                  AuditLog[]
+}
+
+model OwnedProperty {
+  id                   BigInt    @id @default(autoincrement())
+  member_id            BigInt
+  property_id          BigInt
+  date_of_agreement    DateTime?
+  date_of_registration DateTime?
+
+  ownership_status OwnershipStatus
+  Member           Member          @relation(fields: [member_id], references: [id])
+  Property         Property        @relation(fields: [property_id], references: [id])
+  ForSalePosts     ForSalePost[]
+}
+
+model Invoice {
+  id          BigInt  @id @default(autoincrement())
+  member_id   BigInt
+  category_id BigInt
+  property_id BigInt?
+  creator_id  BigInt?
+
+  code    String?
+  title   String
+  remarks String?
+  amount  Decimal?
+  rate    Decimal?
+  date    DateTime
+
+  Category InvoiceCategory @relation(fields: [category_id], references: [id])
+  Member   Member          @relation(fields: [member_id], references: [id])
+  Property Property?       @relation(fields: [property_id], references: [id])
+}
+
+model InvoiceCategory {
+  id   BigInt @id @default(autoincrement())
+  name String 
+
+  Invoices          Invoice[]
+  InvoiceGeneration InvoiceGeneration[]
+}
+
+model InvoiceGeneration {
+  id          BigInt @id @default(autoincrement())
+  category_id BigInt
+  creator_id  BigInt
+
+  code    String
+  title   String
+  remarks String?
+  type    InvoiceType
+  amount  Decimal?
+  rate    Decimal?
+  date    DateTime
+  status  Status
+
+  Category InvoiceCategory @relation(fields: [category_id], references: [id])
+  Creator  Member          @relation(fields: [creator_id], references: [id])
+}
+
+model Payment {
+  id             BigInt  @id @default(autoincrement())
+  member_id      BigInt
+  verifier_id    BigInt?
+  transaction_id String?  @unique
+
+  date            DateTime?
+  amount          Decimal
+  mode            PaymentMode?
+  reference       String?
+  remarks         String?
+  is_auto_payment Boolean?
+  status          PaymentStatus?
+  verified_date   DateTime?
+
+  Member         Member           @relation(fields: [member_id], references: [id])
+  Verifier       Member?          @relation("Verifier", fields: [verifier_id], references: [id])
+  PaymentHistory PaymentHistory[]
+}
+
+model PaymentHistory {
+  id         BigInt   @id @default(autoincrement())
+  payment_id BigInt
+  status     PaymentStatus
+  timestamp  DateTime @default(now())
+  data       String?
+
+  Payment Payment @relation(fields: [payment_id], references: [id])
+}
+
+model Document {
+  id             BigInt   @id @default(autoincrement())
+  title          String
+  file_name_url  String
+  posted_user_id BigInt
+  posted_date    DateTime
+  deleted        Boolean  @default(false)
+
+  PostedUser Member @relation(fields: [posted_user_id], references: [id])
+}
+
+model Contact {
+  id               BigInt   @id @default(autoincrement())
+  name             String
+  designation      String
+  email            String?
+  phone            String?
+  display_sequence Int
+  posted_user_id   BigInt
+  posted_date      DateTime
+
+  PostedUser Member @relation(fields: [posted_user_id], references: [id])
+}
+
+model WorkReport {
+  id             BigInt   @id @default(autoincrement())
+  title          String
+  description    String?
+  posted_user_id BigInt
+  posted_date    DateTime
+  work_date      DateTime
+  property_id    BigInt?
+
+  Photos     WorkReportPhoto[]
+  Property   Property?         @relation(fields: [property_id], references: [id])
+  PostedUser Member            @relation(fields: [posted_user_id], references: [id])
+}
+
+model WorkReportPhoto {
+  id             BigInt @id @default(autoincrement())
+  work_report_id BigInt
+  title          String
+  filename       String
+
+  WorkReport WorkReport @relation(fields: [work_report_id], references: [id], onDelete: Cascade)
+}
+
+model GalleryPhoto {
+  id             BigInt  @id @default(autoincrement())
+  posted_user_id BigInt
+  property_id    BigInt?
+
+  title             String
+  description       String?
+  posted_date       DateTime
+  filename          String
+  status            GalleryPhotoStatus @default(NEW)
+  is_featured_photo Boolean            @default(false)
+
+  Property Property? @relation(fields: [property_id], references: [id])
+  Member   Member    @relation(fields: [posted_user_id], references: [id])
+  Tags     Tag[]
+}
+
+model Tag {
+  id             BigInt @id @default(autoincrement())
+  posted_user_id BigInt
+
+  text String
+
+  Member        Member         @relation(fields: [posted_user_id], references: [id])
+  GalleryPhotos GalleryPhoto[]
+}
+
+model Note {
+  id               BigInt   @id @default(autoincrement())
+  target_member_id BigInt
+  posted_member_id BigInt
+  posted_date      DateTime @default(now())
+  content          String
+
+  TargetMember Member @relation("NoteTargetMember", fields: [target_member_id], references: [id])
+  PostedMember Member @relation("NotePostedMember", fields: [posted_member_id], references: [id])
+}
+
+model ForSalePost {
+  id                BigInt @id @default(autoincrement())
+  owned_property_id BigInt
+  posted_member_id  BigInt
+
+  posted_date DateTime      @default(now())
+  price       Decimal
+  title       String
+  description String?
+  status      ForSaleStatus
+
+  OwnedProperty OwnedProperty @relation(fields: [owned_property_id], references: [id])
+  PostedMember  Member        @relation(fields: [posted_member_id], references: [id])
+}
+
+model PaymentNotification {
+  id               BigInt   @id @default(autoincrement())
+  target_member_id BigInt
+  posted_member_id BigInt
+  posted_date      DateTime @default(now())
+  amount           Decimal
+  custom_message   String?
+
+  TargetMember Member @relation("PaymentNotificationTargetMember", fields: [target_member_id], references: [id])
+  PostedMember Member @relation("PaymentNotificationPostedMember", fields: [posted_member_id], references: [id])
+}
+
+model AuditLog {
+  id BigInt @id @default(autoincrement())
+
+  performed_member_id BigInt
+  target_member_id    BigInt
+  property_id         BigInt?
+
+  action    Action
+  table     String
+  timestamp DateTime @default(now())
+  old_value String?
+  new_value String?
+
+  PerformedMember Member    @relation("Performer", fields: [performed_member_id], references: [id])
+  TargetMember    Member    @relation("Target", fields: [target_member_id], references: [id])
+  Property        Property? @relation(fields: [property_id], references: [id])
+}
+
+enum Role {
+  NEW_REG
+  INACTIVE
+  ACTIVE
+  EDITOR
+  ADMIN
+}
+
+enum OwnershipStatus {
+  OWNER
+  SOLD
+}
+
+enum InvoiceType {
+  PER_MEMBER
+  PER_PROPERTY
+}
+
+enum Status {
+  DELETED
+  ACTIVE
+}
+
+enum PaymentMode {
+  UPI
+  CREDIT_CARD
+  DEBIT_CARD
+  CASH
+  BANK_TRANSFER
+  CHEQUE
+  DEPOSIT
+  OTHER
+
+  PAY_PAGE
+  CARD
+  UPI_INTENT
+  SAVED_CARD
+  TOKEN
+  UPI_COLLECT
+  UPI_QR
+  NET_BANKING
+  NETBANKING
+}
+
+enum PaymentStatus {
+  INITIATED
+  SUCCESS
+  FAILED
+  VERIFIED
+}
+
+enum Action {
+  CREATE
+  UPDATE
+  DELETE
+  VERIFY
+}
+
+enum ForSaleStatus {
+  NOT_AVAILABLE
+  FOR_SALE
+  FOR_RENT
+}
+
+enum GalleryPhotoStatus {
+  NEW
+  APPROVED
+  REJECTED
+}
