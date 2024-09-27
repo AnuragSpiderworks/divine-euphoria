@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "./src/index.ts",
   "scripts": {
     "build": "dotenv -e .env.production npm i && tsc -p tsconfig.json",
     "dev": "dotenv -e .env.development nodemon --exec ts-node src/index.ts",
