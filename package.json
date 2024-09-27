@@ -2,14 +2,14 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "build": "dotenv -e .env.production npm i && tsc -p tsconfig.json",
     "dev": "dotenv -e .env.development nodemon --exec ts-node src/index.ts",
     "importDataServer": "dotenv -e .env.development nodemon src/scripts/importData.mjs",
     "debug": "nodemon --exec \"node --inspect=0.0.0.0:9229 --require ts-node/register ./src/index.ts\"",
     "vercel-build": "echo \"No need to run build\"",
-    "start": "dotenv -e .env.production node build/src/index.js",
+    "start": "dotenv -e .env.production node build/src/index.ts",
     "migrate:local": "dotenv -e .env.development npx prisma migrate dev",
     "migrate:production": "dotenv -e .env.production npx prisma migrate deploy",
     "studio:local": "dotenv -e .env.development npx prisma studio"
